@@ -10,30 +10,28 @@ void assert_card_valid(card_t c) {
 }
 
 const char * ranking_to_string(hand_ranking_t r) {
-
   switch(r)
     {
     case 0:
-      return "STRAIGHT_FLUSH\n";
+      return "STRAIGHT_FLUSH";
     case 1:
-      return "FOUR_OF_A_KIND\n";
+      return "FOUR_OF_A_KIND";
     case 2:
-      return "FULL_HOUSE\n";
+      return "FULL_HOUSE";
     case 3:
-      return "FLUSH\n";
+      return "FLUSH";
     case 4:
-      return "STRAIGHT\n";
+      return "STRAIGHT";
     case 5:
-      return "THREE_OF_A_KIND\n";
+      return "THREE_OF_A_KIND";
     case 6:
-      return "TWO_PAIR\n";
+      return "TWO_PAIR";
     case 7:
-      return "PAIR\n";
+      return "PAIR";
     case 8:
-      return "NOTHING\n";
-    default:
+      return "NOTHING";
+    }
       return "";
-}
 }
 
 char value_letter(card_t c) {
@@ -66,8 +64,8 @@ char value_letter(card_t c) {
     case 14:
       return 'A';
     default:
-      return EXIT_FAILURE;
-}
+      return 'x';
+    }
 }
 
 char suit_letter(card_t c) {
@@ -80,24 +78,67 @@ char suit_letter(card_t c) {
       return 'd';
     case CLUBS:  
       return 'c';
-  case NUM_SUITS:
-    return EXIT_FAILURE;
-  default:
-    return EXIT_FAILURE;
+    default:
+      return 'x';
   }
 }
 
 void print_card(card_t c) {
-  printf("%c%c",c.value,c.suit);
+  printf("%c%c",value_letter(c),suit_letter(c));
 }
 
 card_t card_from_letters(char value_let, char suit_let) {
   card_t temp;
-  temp.value = value_let;
-  temp.suit = suit_let;
-  assert(temp.value >= 2 && temp.value <= 14);
-  assert(temp.suit >= 0 && temp.suit <= 3);
-  return temp;
+
+  assert((value_let >= '2' && value_let <= '9') || value_let == 'A' || value_let == 'K'
+	 || value_let == 'Q' || value_let == 'J' || value_let == '0');
+  assert( suit_let == 's' || suit_let == 'h' || suit_let == 'd' || suit_let == 'c' );
+
+  if( value_let >= '2' && value_let <= '9' )
+    temp.value = value_let - '0';
+
+  switch(value_let){
+  case 'A':
+    temp.value = VALUE_ACE;
+    break;
+
+  case 'K':
+    temp.value = VALUE_KING;
+    break;
+
+  case 'Q':
+    temp.value = VALUE_QUEEN;
+    break;
+
+  case 'J':
+    temp.value = VALUE_JACK;
+    break;
+
+  case '0':
+    temp.value = 10;
+    break;
+
+  }
+
+  switch(suit_let){
+
+  case 's':
+    temp.suit = SPADES;
+    break;
+
+  case 'h':
+    temp.suit = HEARTS;
+    break;
+
+  case 'd':
+    temp.suit = DIAMONDS;
+    break;
+
+  case 'c':
+    temp.suit = CLUBS;
+    break;
+  }
+  return temp; 
 }
 
 card_t card_from_num(unsigned c) {
